@@ -1,0 +1,35 @@
+version: '3'
+networks:
+  POXetMININET:
+     ipam:
+      config:
+        - subnet: 192.168.12.0/24
+          gateway: 192.168.12.1
+services:
+    mininet:
+        user: root
+        tty: true
+        stdin_open: true
+        build:
+            context: ./mininet
+        # Add any additional configuration for the Mininet service here
+        volumes:
+            - /lib/modules:/lib/modules
+        hostname: mininet
+        networks:
+            POXetMININET:
+                ipv4_address: 192.168.12.45
+        links:
+            - pox
+        privileged: true
+    
+    pox:
+        build:
+            context: ./pox
+        ports:
+            - 6634:6634
+        hostname: pox
+        networks:
+            POXetMININET:
+                ipv4_address: 192.168.12.25
+        tty: true
